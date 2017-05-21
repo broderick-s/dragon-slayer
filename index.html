@@ -12,42 +12,60 @@
         <div class="small-6 columns">
             <h1 class="text-center">YOU</h1>
             <div class="healthbar">
-                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
-
+                <div 
+                    class="healthbar text-center" 
+                    style="background-color: green; margin: 0; color: white;"
+                    :style="playerHealthBar">
+                    {{ playerHealth }}
                 </div>
             </div>
         </div>
         <div class="small-6 columns">
-            <h1 class="text-center">MONSTER</h1>
+            <h1 class="text-center">DRAGON</h1>
             <div class="healthbar">
-                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
-
+                <div 
+                class="healthbar text-center" 
+                style="background-color: green; margin: 0; color: white;"
+                :style="enemyHealthBar">
+                    {{ enemyHealth }}
                 </div>
             </div>
         </div>
     </section>
     <section class="row controls">
-        <div class="small-12 columns">
-            <button id="start-game">START NEW GAME</button>
+        <div class="small-12 columns" v-if="!gameStarted">
+            <button id="start-game" @click="startGame">START NEW GAME</button>
         </div>
     </section>
-    <section class="row controls">
+    <section
+        class="row controls"
+        v-if="gameStarted">
         <div class="small-12 columns">
-            <button id="attack">ATTACK</button>
-            <button id="special-attack">SPECIAL ATTACK</button>
-            <button id="heal">HEAL</button>
-            <button id="give-up">GIVE UP</button>
+            <button id="attack" @click="attack">ATTACK</button>
+            <button id="special-attack" @click="attack('special')">SPECIAL ATTACK</button>
+            <button id="heal" @click="heal">HEAL</button>
+            <button id="give-up" @click="endGame">GIVE UP</button>
         </div>
     </section>
-    <section class="row log">
+    <section class="row log" v-if="!(attackLog.length === 0)">
         <div class="small-12 columns">
             <ul>
-                <li>
-
-                </li>
+                <template v-for="attacks in attackLog.reverse()">
+                    <li
+                      v-for="(attackPoints, attacker) in attacks"
+                      :class="attackStyling(attacker)">
+                        <template v-if="attackPoints < 0">
+                            PLAYER HEALS FOR {{ -attackPoints }}
+                        </template>
+                        <template v-else>
+                            {{ attackerName(attacker) }} {{ attackPoints }}
+                        </template>
+                    </li>
+                </template>
             </ul>
         </div>
     </section>
 </div>
+<script type="text/javascript" src="js/app-vue.js"></script>
 </body>
 </html>
